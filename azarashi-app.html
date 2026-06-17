@@ -166,10 +166,10 @@ nav button.active{border-bottom:3px solid #64d0f5;font-weight:600;color:white}
 const AK = [
   // ─── スターティングメンバー ─────────────────────
   { id:1,  name:'ナナ',    kana:'なな',    sex:'m', born:null,         died:'2011-05-23',
-    zoo:'男鹿水族館GAO', species:'ゴマフアザラシ', img:null, alive:false,
+    zoo:'男鹿水族館GAO', species:'ゴマフアザラシ', img:'https://www.gao-aqua.jp/gao-cms/assets/uploads/2011/04/2011.3.3-012-300x225.jpg', alive:false,
     parents:[], children:[5,6,7], memo:'推定22歳で死亡。GAOオリジナルメンバー。マリーの伴侶。' },
   { id:2,  name:'マリー',  kana:'まりー',  sex:'f', born:null,         died:'2019-05-04',
-    zoo:'男鹿水族館GAO', species:'ゴマフアザラシ', img:null, alive:false,
+    zoo:'男鹿水族館GAO', species:'ゴマフアザラシ', img:'https://www.gao-aqua.jp/gao-cms/assets/uploads/2011/07/2011.7.9-007-300x225.jpg', alive:false,
     parents:[], children:[5,6,7], memo:'おたる水族館からの保護個体。推定24歳で死亡。ナナの伴侶。' },
   { id:3,  name:'イカク',  kana:'いかく',  sex:'f', born:null,         died:null,
     zoo:'八景島シーパラダイス', species:'ゴマフアザラシ', img:null, alive:true,
@@ -206,13 +206,13 @@ const AK = [
     zoo:'新江ノ島水族館', species:'ゴマフアザラシ', img:'https://assets.st-note.com/img/1742542631-bgDmUI2XBWCjiKo89wvaPFuq.jpg', alive:true,
     parents:[8,9], children:[], memo:'2017年2月4日、新江ノ島水族館へ。' },
   { id:14, name:'きなこ',  kana:'きなこ',  sex:'f', born:'2017-04-19', died:null,
-    zoo:'マリンピア日本海', species:'ゴマフアザラシ', img:null, alive:true,
-    parents:[8,9], children:[], memo:'2017年9月29日、マリンピア日本海へ。' },
+    zoo:'マリンピア日本海', species:'ゴマフアザラシ', img:'https://www.marinepia.or.jp/cms/wp-content/uploads/2017/10/20171004102559.jpg', alive:true,
+    parents:[8,9], children:[], memo:'2017年9月29日、マリンピア日本海へ。GAO初の人工哺育育成個体。' },
   { id:15, name:'わらび',  kana:'わらび',  sex:'m', born:'2019-03-30', died:null,
     zoo:'ドルフィンリゾート', species:'ゴマフアザラシ', img:null, alive:true,
     parents:[8,9], children:[], memo:'2020年2月6日、ドルフィンリゾートへ。' },
   { id:18, name:'ジェット',kana:'じぇっと', sex:'m', born:'2021-04-17', died:null,
-    zoo:'城崎マリンワールド', species:'ゴマフアザラシ', img:null, alive:true,
+    zoo:'城崎マリンワールド', species:'ゴマフアザラシ', img:'https://marineworld.hiyoriyama.co.jp/images/2025/10/20199515a3195e444e1c617639f3d4c0-480x360.jpeg', alive:true,
     parents:[8,9], children:[], memo:'2022年11月18日、城崎マリンワールドへ。' },
   { id:20, name:'ターボ',  kana:'たーぼ',  sex:'m', born:'2023-04-15', died:null,
     zoo:'男鹿水族館GAO', species:'ゴマフアザラシ', img:'https://assets.st-note.com/img/1761920405-ZQ3C8SsnegUcEGkvuDBrW5If.jpg', alive:true,
@@ -232,8 +232,8 @@ const AK = [
     zoo:'四国水族館', species:'ゴマフアザラシ', img:'https://assets.st-note.com/img/1756048322-2QgxBCAoinE1ay5Y3RNHuPVZ.jpg', alive:true,
     parents:[7,8], children:[], memo:'伊豆・三津シーパラダイス→toa→2022年2月、四国水族館へ。' },
   { id:17, name:'あんず',  kana:'あんず',  sex:'f', born:'2020-03-25', died:null,
-    zoo:'神戸どうぶつ王国', species:'ゴマフアザラシ', img:null, alive:true,
-    parents:[7,8], children:[], memo:'ヨーデルの森→2025年1月16日、神戸どうぶつ王国へ。' },
+    zoo:'越前松島水族館', species:'ゴマフアザラシ', img:'https://assets.st-note.com/img/1736057493-FvlsImOCpwayVNB9PdHQh8rX.jpg', alive:true,
+    parents:[7,8], children:[], memo:'ヨーデルの森→2025年1月16日、神戸どうぶつ王国→2026年6月5日、越前松島水族館へ。' },
   { id:19, name:'おんぷ',  kana:'おんぷ',  sex:'f', born:'2022-03-19', died:null,
     zoo:'海遊館', species:'ゴマフアザラシ', img:'https://assets.st-note.com/img/1733430906-KGwPpt6MukHmZ8fjr7OnTyca.jpg', alive:true,
     parents:[7,8], children:[], memo:'2024年2月29日、海遊館へ。' },
@@ -441,135 +441,4 @@ function renderQuiz(){
         ${c}</button>`).join('')}
     </div>`;
 }
-function answerQuiz(btn,chosen,correct){
-  if(quizAnswered)return;quizAnswered=true;
-  const isOk=chosen===correct;
-  if(isOk)quizScore++;
-  btn.classList.add(isOk?'correct':'wrong');
-  if(!isOk){
-    document.querySelectorAll('.quiz-choice').forEach(b=>{
-      if(b.textContent.trim()===correct)b.classList.add('correct');
-    });
-  }
-  setTimeout(()=>{quizIdx++;renderQuiz();},1000);
-}
-
-// ═══════════════════════════════════════════════
-// もぐれゲーム（タップして魚をとれ！）
-// ═══════════════════════════════════════════════
-(function(){
-  let canvas,ctx,score,miss,timeLeft,animId,items=[],spawnTimer=0,running=false,gameOver=false;
-  const FISH=['🐟','🐠','🦐','🦑','🐡'];
-  const BOMBS=['🦈','🪼']; // 触ると-1ミス
-  const W=320,H=460,MAX_MISS=5,GAME_TIME=30;
-
-  function init(){
-    canvas=document.getElementById('mogure-canvas');if(!canvas||canvas._mg)return;
-    canvas._mg=true;
-    ctx=canvas.getContext('2d');
-    canvas.addEventListener('click',onClick);
-    canvas.addEventListener('touchend',e=>{e.preventDefault();const t=e.changedTouches[0];onClick({clientX:t.clientX,clientY:t.clientY});},{passive:false});
-    startGame();
-  }
-
-  function startGame(){
-    score=0;miss=0;timeLeft=GAME_TIME;items=[];spawnTimer=0;running=true;gameOver=false;
-    updateHUD();
-    if(animId)cancelAnimationFrame(animId);
-    let last=0;
-    function loop(ts){
-      const dt=last?(ts-last)/1000:0.016;last=ts;
-      update(dt);draw();
-      if(running||gameOver)animId=requestAnimationFrame(loop);
-    }
-    animId=requestAnimationFrame(loop);
-    let sec=setInterval(()=>{
-      if(!running){clearInterval(sec);return;}
-      timeLeft--;updateHUD();
-      if(timeLeft<=0){running=false;gameOver=true;clearInterval(sec);}
-    },1000);
-  }
-
-  function update(dt){
-    if(!running)return;
-    spawnTimer+=dt;
-    if(spawnTimer>0.9-Math.min(score*0.02,0.5)){
-      spawnTimer=0;spawn();
-    }
-    items.forEach(it=>{it.y+=it.sp*dt;});
-    // 逃げた魚（ゴール通過）
-    items.filter(it=>!it.bomb&&it.y>H+40).forEach(()=>{
-      miss++;updateHUD();if(miss>=MAX_MISS){running=false;gameOver=true;}
-    });
-    items=items.filter(it=>it.y<=H+40&&!it.hit);
-  }
-
-  function spawn(){
-    const isBomb=Math.random()<0.18;
-    const em=isBomb?BOMBS[Math.floor(Math.random()*BOMBS.length)]:FISH[Math.floor(Math.random()*FISH.length)];
-    items.push({
-      em,x:30+Math.random()*(W-60),y:-30,sp:60+Math.random()*80,
-      sz:28,bomb:isBomb,hit:false,hitAnim:0
-    });
-  }
-
-  function draw(){
-    ctx.clearRect(0,0,W,H);
-    const grad=ctx.createLinearGradient(0,0,0,H);
-    grad.addColorStop(0,'#0a2d4a');grad.addColorStop(1,'#1a5f8a');
-    ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
-    ctx.fillStyle='rgba(255,255,255,0.06)';
-    for(let i=0;i<6;i++){ctx.beginPath();ctx.arc(50+i*45,((Date.now()/1000*20+i*80)%H),4,0,Math.PI*2);ctx.fill();}
-    ctx.font='28px serif';ctx.textAlign='center';ctx.textBaseline='middle';
-    items.forEach(it=>{
-      ctx.save();
-      if(it.hitAnim>0){ctx.globalAlpha=it.hitAnim;ctx.scale(1+it.hitAnim*0.5,1+it.hitAnim*0.5);it.hitAnim-=0.08;}
-      ctx.fillText(it.em,it.x,it.y);
-      ctx.restore();
-    });
-    if(gameOver){
-      ctx.fillStyle='rgba(0,0,0,0.65)';ctx.fillRect(0,0,W,H);
-      ctx.fillStyle='white';ctx.font='bold 22px sans-serif';ctx.textAlign='center';
-      ctx.fillText('ゲームオーバー 🦭',W/2,H/2-40);
-      ctx.font='18px sans-serif';ctx.fillText(`スコア: ${score}`,W/2,H/2);
-      ctx.font='15px sans-serif';ctx.fillStyle='#64d0f5';
-      ctx.fillText('タップしてもう一度',W/2,H/2+50);
-    }
-  }
-
-  function onClick(e){
-    if(gameOver){startGame();return;}
-    if(!running)return;
-    const rect=canvas.getBoundingClientRect();
-    const scaleX=W/rect.width;
-    const px=(e.clientX-rect.left)*scaleX;
-    const py=(e.clientY-rect.top)*(H/rect.height);
-    for(let i=items.length-1;i>=0;i--){
-      const it=items[i];
-      if(Math.abs(it.x-px)<24&&Math.abs(it.y-py)<24){
-        it.hit=true;it.hitAnim=1;
-        if(it.bomb){miss++;updateHUD();if(miss>=MAX_MISS){running=false;gameOver=true;}}
-        else{score++;updateHUD();}
-        break;
-      }
-    }
-  }
-
-  function updateHUD(){
-    document.getElementById('mg-score').textContent=score;
-    document.getElementById('mg-time').textContent=timeLeft;
-    document.getElementById('mg-miss').textContent=miss;
-  }
-
-  window.initMogure=init;
-})();
-
-// ═══════════════════════════════════════════════
-// Service Worker 登録
-// ═══════════════════════════════════════════════
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./azarashi-sw.js').catch(()=>{});
-}
-</script>
-</body>
-</html>
+function an
