@@ -1,6 +1,6 @@
 # アザラシファミリーアプリ 引き継ぎメモ
 
-最終更新: 2026-06-17
+最終更新: 2026-06-18
 
 ---
 
@@ -11,7 +11,7 @@
 
 - **本番URL**: https://momivich.github.io/azarashi-app/azarashi-app.html
 - **リポジトリ**: https://github.com/momivich/azarashi-app
-- **SW キャッシュバージョン**: 現在 `azarashi-app-v3`（更新時はインクリメント必須）
+- **SW キャッシュバージョン**: 現在 `azarashi-app-v4`（更新時はインクリメント必須）
 - **データ出典**: on-yasuken.hatenablog.com（2025-04-04更新）
 
 ---
@@ -26,9 +26,9 @@ azarashi-manifest.json  PWAマニフェスト
 
 ---
 
-## AK配列 現在の状態（22頭）
+## AK配列 現在の状態（25頭）
 
-### 写真あり ✅（18頭）
+### 写真あり ✅（21頭）
 
 | id | 名前     | 施設                       | img出典 |
 |----|----------|----------------------------|---------|
@@ -50,6 +50,9 @@ azarashi-manifest.json  PWAマニフェスト
 | 20 | ターボ   | 男鹿水族館GAO              | note.com記事 |
 | 21 | スカイ   | 男鹿水族館GAO              | note.com記事 |
 | 22 | ジャンボ | 男鹿水族館GAO（故2025-03-25）| GAO公式ブログ 2025年3月記事（blog/45493.html） |
+| 23 | おはぎ   | 伊豆・三津シーパラダイス   | みとしー公式 命名記事（image.jsp?id=1403） |
+| 24 | だんご   | 伊豆・三津シーパラダイス   | みとしー公式 命名記事（image.jsp?id=1404） |
+| 25 | ここあ   | 新江ノ島水族館             | えのすいトリーター日誌 diary.06804.00000002.jpg |
 
 ### 写真なし（写真困難）❌
 
@@ -64,6 +67,13 @@ azarashi-manifest.json  PWAマニフェスト
 ---
 
 ## 最近の変更履歴
+
+### 2026-06-18
+- **3頭追加**: おはぎ(id:23)、だんご(id:24) ← みとしー・父ゴハン、ここあ(id:25) ← えのすい・父オガ×母ここ
+- **children更新**: ゴハン→[23,24]、オガ→[25]、ここ→[25]
+- **SW**: v3 → v4
+- ⚠️ pushが必要 → 下記「gitプッシュ手順」参照
+- **保留**: 2026年3月22日生まれのみとしーのメス（名前未決定、父親不明）
 
 ### 2026-06-17（続セッション）
 - **写真追加3頭**: わらび（GAO命名記事2019/07）、ジャンボ（GAOブログ2025/03 blog/45493.html）、ゴハン（note.com ヒロサキ探訪記⑫）
@@ -154,7 +164,8 @@ git push origin main
 | マリンピア日本海 | marinepia.or.jp/news（entry-XXXX.html） |
 | 城崎マリンワールド | marineworld.hiyoriyama.co.jp |
 | ドルフィンリゾート | dolphin-resort.jp |
-| 伊豆・三津シーパラダイス（みとしー） | mitosea.com/topics/、note.com ヒロサキ探訪記⑫ |
+| 伊豆・三津シーパラダイス（みとしー） | mitosea.com/topics/、note.com ヒロサキ探訪記⑫ (image.jsp?id=XXX でimg hotlink可能) |
+| 新江ノ島水族館（えのすい） | enosui.com/diaryentry.php（トリーター日誌）、prtimes.jp プレスリリース |
 | note.com | ヒロサキ探訪記シリーズ（analogbeat）が最も充実した情報源 |
 
 ---
