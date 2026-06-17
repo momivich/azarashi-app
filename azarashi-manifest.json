@@ -1,0 +1,21 @@
+{
+  "name": "アザラシファミリー",
+  "short_name": "アザラシ",
+  "start_url": "./azarashi-app.html",
+  "display": "standalone",
+  "background_color": "#0a2d4a",
+  "theme_color": "#0a3d5c",
+  "description": "日本の水族館・動物園のアザラシ情報アプリ",
+  "icons": [
+    {
+      "src": "azarashi-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "azarashi-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

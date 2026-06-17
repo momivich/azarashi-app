@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0a3d5c">
+<title>アザラシファミリー</title>
+<link rel="manifest" href="azarashi-manifest.json">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif;background:#e5f3fb;color:#0a2035;min-height:100vh}
+header{background:linear-gradient(135deg,#0a2d4a 0%,#1a5f8a 55%,#2896c8 100%);color:white;padding:0.85rem 1rem;display:flex;align-items:center;gap:0.6rem;box-shadow:0 2px 8px rgba(0,0,0,0.25)}
+header h1{font-size:1.1rem;font-weight:800;letter-spacing:0.04em;flex:1}
+nav{background:linear-gradient(to bottom,#1a5f8a,#0a3d5c);display:flex;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{color:rgba(255,255,255,0.82);background:none;border:none;padding:0.72rem 1.1rem;font-size:0.82rem;cursor:pointer;white-space:nowrap;flex-shrink:0;font-family:inherit;transition:background 0.15s}
+nav button:hover{background:rgba(255,255,255,0.12)}
+nav button.active{border-bottom:3px solid #64d0f5;font-weight:600;color:white}
+.nav-sep{width:1px;background:rgba(255,255,255,0.22);margin:0.45rem 0.15rem;flex-shrink:0}
+.tab{display:none;padding:1rem;min-height:calc(100vh - 100px)}
+.tab.active{display:block}
+
+/* ── カード ── */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0.75rem}
+.card{background:white;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.09);cursor:pointer;transition:transform 0.18s,box-shadow 0.18s}
+.card:hover{transform:translateY(-3px);box-shadow:0 7px 22px rgba(0,0,0,0.14)}
+.card.dead{opacity:0.55}
+.card-face{background:linear-gradient(160deg,#b0d8f5,#d4eeff);display:flex;justify-content:center;position:relative;overflow:hidden;min-height:110px;align-items:center}
+.card-face-zoo{position:absolute;bottom:0;left:0;right:0;background:rgba(5,30,60,0.52);color:rgba(255,255,255,0.92);font-size:0.62rem;padding:2px 6px;font-weight:600;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
+.card-face img{width:100%;height:110px;object-fit:cover;display:block}
+.card-body{padding:0.75rem 0.8rem}
+.card-name{font-size:0.95rem;font-weight:700;color:#0a2d4a}
+.card-kana{font-size:0.72rem;color:#999;margin-top:1px}
+.card-species{font-size:0.7rem;color:#2896c8;margin-top:3px;font-weight:500}
+.badge{display:inline-block;font-size:0.62rem;padding:1px 6px;border-radius:10px;margin-left:4px;vertical-align:middle;font-weight:600}
+.bm{background:#dbeeff;color:#1a5c8a}.bf{background:#fde4ec;color:#8a2044}.bu{background:#eee;color:#555}
+
+/* ── フィルター ── */
+.filter-bar{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.75rem;align-items:center}
+.filter-bar input{flex:1;min-width:120px;padding:0.42rem 0.7rem;border:1.5px solid #a8d0ec;border-radius:20px;font-size:0.85rem;font-family:inherit;background:white;outline:none}
+.filter-bar input:focus{border-color:#2896c8}
+.filter-bar select{padding:0.4rem 0.6rem;border:1.5px solid #a8d0ec;border-radius:20px;font-size:0.82rem;font-family:inherit;background:white;cursor:pointer}
+#zukan-count{font-size:0.72rem;color:#666;align-self:center}
+
+/* ── モーダル ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:1000;padding:1rem}
+.modal{background:white;border-radius:16px;max-width:420px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.22)}
+.modal-hero{height:180px;background:linear-gradient(160deg,#b0d8f5,#d4eeff);display:flex;align-items:center;justify-content:center;position:relative;border-radius:16px 16px 0 0}
+.modal-hero img{width:100%;height:180px;object-fit:cover;border-radius:16px 16px 0 0}
+.modal-body{padding:1.1rem 1.2rem}
+.modal-name{font-size:1.5rem;font-weight:800;color:#0a2d4a}
+.modal-kana{font-size:0.82rem;color:#666;margin-top:2px}
+.modal-species{font-size:0.78rem;color:#2896c8;font-weight:600;margin-top:4px}
+.modal-row{display:flex;gap:0.5rem;flex-wrap:wrap;margin:0.7rem 0 0.3rem}
+.modal-tag{background:#e5f3fb;color:#1a5c8a;font-size:0.75rem;padding:3px 10px;border-radius:12px;font-weight:500}
+.modal-section{margin-top:0.8rem}
+.modal-section h3{font-size:0.75rem;color:#888;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.3rem}
+.modal-section p{font-size:0.88rem;line-height:1.6;color:#333}
+.modal-close{margin-top:1rem;width:100%;padding:0.6rem;background:#e5f3fb;border:none;border-radius:12px;cursor:pointer;font-size:0.88rem;font-family:inherit;font-weight:600;color:#0a3d5c}
+
+/* ── 家系図 ── */
+.tree-wrap{overflow-x:auto;padding-bottom:1rem}
+.tree-zoo-section{margin-bottom:1.5rem}
+.tree-zoo-title{font-size:0.85rem;font-weight:700;color:#0a3d5c;background:linear-gradient(90deg,#b0d8f5,transparent);padding:0.3rem 0.8rem;border-radius:8px;margin-bottom:0.6rem}
+.tree-grid{display:flex;gap:1rem;flex-wrap:wrap}
+.tree-card{background:white;border-radius:12px;padding:0.6rem 0.8rem;box-shadow:0 2px 8px rgba(0,0,0,0.09);font-size:0.8rem;min-width:100px;cursor:pointer;transition:box-shadow 0.15s}
+.tree-card:hover{box-shadow:0 4px 14px rgba(0,0,0,0.14)}
+.tree-card-name{font-weight:700;color:#0a2d4a}
+.tree-card-sub{font-size:0.68rem;color:#666;margin-top:2px}
+.tree-rel{font-size:0.72rem;color:#2896c8;margin-top:3px}
+
+/* ── クイズ ── */
+#quiz-box{max-width:440px;margin:0 auto}
+.quiz-q{background:white;border-radius:14px;padding:1.1rem;margin-bottom:0.8rem;box-shadow:0 2px 8px rgba(0,0,0,0.08);font-size:0.95rem;font-weight:600;line-height:1.5;color:#0a2d4a}
+.quiz-choices{display:flex;flex-direction:column;gap:0.45rem}
+.quiz-choice{background:white;border:2px solid #c8e4f5;border-radius:12px;padding:0.65rem 0.9rem;cursor:pointer;font-size:0.88rem;font-family:inherit;text-align:left;transition:all 0.15s;color:#0a2035}
+.quiz-choice:hover{background:#e5f3fb;border-color:#2896c8}
+.quiz-choice.correct{background:#d4f5e4;border-color:#2ecc71;color:#166534}
+.quiz-choice.wrong{background:#fde4e4;border-color:#e74c3c;color:#7f1d1d}
+.quiz-result{text-align:center;padding:1.2rem;background:white;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+#quiz-score{font-size:2rem;font-weight:800;color:#0a3d5c}
+.quiz-btn{padding:0.55rem 1.5rem;background:#1a5f8a;color:white;border:none;border-radius:24px;font-size:0.88rem;font-family:inherit;cursor:pointer;font-weight:600}
+.quiz-btn:hover{background:#2896c8}
+
+/* ── もぐれゲーム ── */
+#mogure-wrap{max-width:360px;margin:0 auto;text-align:center}
+#mogure-canvas{display:block;width:100%;border-radius:12px;background:#0a2d4a;cursor:pointer;touch-action:manipulation}
+#mogure-hud{display:flex;justify-content:space-between;align-items:center;padding:0.3rem 0;font-size:0.85rem;font-weight:600;color:#0a2d4a;margin-bottom:0.4rem}
+
+/* ── ユーティリティ ── */
+.page-title{font-size:1rem;font-weight:700;color:#0a3d5c;margin-bottom:0.75rem}
+.center{text-align:center}
+.btn{padding:0.55rem 1.4rem;background:#1a5f8a;color:white;border:none;border-radius:24px;font-size:0.88rem;font-family:inherit;cursor:pointer;font-weight:600}
+.btn:hover{background:#2896c8}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp .3s ease}
+</style>
+</head>
+<body>
+
+<header>
+  <span style="font-size:1.6rem">🦭</span>
+  <h1>アザラシファミリー</h1>
+</header>
+
+<nav>
+  <button class="active" onclick="showTab('zukan',this)">📖 図鑑</button>
+  <button onclick="showTab('tree',this)">🌊 家系図</button>
+  <span class="nav-sep"></span>
+  <button onclick="showTab('quiz',this);initQuiz()">🎮 クイズ</button>
+  <button onclick="showTab('mogure',this);initMogure()">🐠 もぐれ</button>
+</nav>
+
+<!-- ── 図鑑 ── -->
+<div id="tab-zukan" class="tab active">
+  <div class="filter-bar">
+    <input id="zukan-q" type="text" placeholder="🔍 名前・水族館で検索" oninput="buildZukan()">
+    <select id="zukan-sex" onchange="buildZukan()">
+      <option value="">性別</option>
+      <option value="f">♀ メス</option>
+      <option value="m">♂ オス</option>
+    </select>
+    <select id="zukan-zoo" onchange="buildZukan()">
+      <option value="">すべての施設</option>
+    </select>
+    <span id="zukan-count"></span>
+  </div>
+  <div id="zukan-grid" class="card-grid"></div>
+</div>
+
+<!-- ── 家系図 ── -->
+<div id="tab-tree" class="tab">
+  <div class="page-title">🌊 アザラシ家系図</div>
+  <div id="tree-content"></div>
+</div>
+
+<!-- ── クイズ ── -->
+<div id="tab-quiz" class="tab">
+  <div id="quiz-box"></div>
+</div>
+
+<!-- ── もぐれ ── -->
+<div id="tab-mogure" class="tab" style="padding:0.5rem;background:#0a1e30;min-height:100%">
+  <div id="mogure-wrap">
+    <div id="mogure-hud" style="color:#64d0f5;background:#0a2d4a;border-radius:8px;padding:0.4rem 0.8rem">
+      <span>スコア: <b id="mg-score">0</b></span>
+      <span>時間: <b id="mg-time">30</b>s</span>
+      <span>ミス: <b id="mg-miss">0</b>/5</span>
+    </div>
+    <canvas id="mogure-canvas" width="320" height="460"></canvas>
+  </div>
+</div>
+
+<!-- ── モーダル ── -->
+<div id="modal-overlay" class="overlay" style="display:none" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal-box"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// アザラシデータ（AK配列） — プレースホルダー
+// ═══════════════════════════════════════════════
+const AK = [
+  // ─── 旭山動物園 ───────────────────────────
+  { id:1,  name:'ウミ',   kana:'うみ',   sex:'f', born:'2019-06-15', died:null,
+    zoo:'旭山動物園', species:'ゴマフアザラシ', img:null, alive:true,
+    parents:[], children:[2,3], memo:'おっとりした性格。ごはんの時間が大好き。' },
+  { id:2,  name:'ソラ',   kana:'そら',   sex:'m', born:'2022-03-08', died:null,
+    zoo:'旭山動物園', species:'ゴマフアザラシ', img:null, alive:true,
+    parents:[1], children:[], memo:'やんちゃな末っ子。泳ぎが得意。' },
+  { id:3,  name:'シズク', kana:'しずく', sex:'f', born:'2020-11-02', died:null,
+    zoo:'旭山動物園', species:'ゴマフアザラシ', img:null, alive:true,
+    parents:[1], children:[], memo:'好奇心旺盛。水中トンネルが好き。' },
+
+  // ─── 名古屋港水族館 ──────────────────────
+  { id:4,  name:'ナミ',   kana:'なみ',   sex:'f', born:'2018-09-20', died:null,
+    zoo:'名古屋港水族館', species:'ゴマフアザラシ', img:null, alive:true,
+    parents:[], children:[5], memo:'' },
+  { id:5,  name:'コウ',   kana:'こう',   sex:'m', born:'2023-07-14', died:null,
+    zoo:'名古屋港水族館', species:'ゴマフアザラシ', img:null, alive:true,
+    parents:[4], children:[], memo:'2023年生まれの最年少。元気いっぱい。' },
+
+  // ─── 鴨川シーワールド ────────────────────
+  { id:6,  name:'アオイ', kana:'あおい', sex:'f', born:'2015-04-12', died:null,
+    zoo:'鴨川シーワールド', species:'ゼニガタアザラシ', img:null, alive:true,
+    parents:[], children:[7], memo:'貫禄のあるベテラン。' },
+  { id:7,  name:'シュン', kana:'しゅん', sex:'m', born:'2021-07-03', died:null,
+    zoo:'鴨川シーワールド', species:'ゼニガタアザラシ', img:null, alive:true,
+    parents:[6], children:[], memo:'' },
+
+  // ─── サンシャイン水族館 ──────────────────
+  { id:8,  name:'レイ',   kana:'れい',   sex:'f', born:'2020-02-25', died:null,
+    zoo:'サンシャイン水族館', species:'ゴマフアザラシ', img:null, alive:true,
+    parents:[], children:[], memo:'東京の空の下で育った。ビルが見える水槽が自慢。' },
+
+  // ─── すみだ水族館 ────────────────────────
+  { id:9,  name:'コト',   kana:'こと',   sex:'f', born:'2017-02-14', died:null,
+    zoo:'すみだ水族館', species:'ワモンアザラシ', img:null, alive:true,
+    parents:[], children:[], memo:'バレンタインデー生まれ。' },
+  { id:10, name:'タイガ', kana:'たいが', sex:'m', born:'2023-05-30', died:null,
+    zoo:'すみだ水族館', species:'ゴマフアザラシ', img:null, alive:true,
+    parents:[], children:[], memo:'2023年生まれ。まだまだ小さい。' },
+];
+
+// ═══════════════════════════════════════════════
+// タブ切り替え
+// ═══════════════════════════════════════════════
+function showTab(name, btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  const t=document.getElementById('tab-'+name);
+  if(t)t.classList.add('active');
+  if(btn)btn.classList.add('active');
+}
+
+// ═══════════════════════════════════════════════
+// アザラシSVGプレースホルダー
+// ═══════════════════════════════════════════════
+function sealFace(a, sz){
+  const s=a.sex==='m'?'#64a0d0':a.sex==='f'?'#c07ab8':'#90a0b0';
+  return `<svg width="${sz}" height="${sz}" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="40" cy="46" rx="28" ry="20" fill="${s}" opacity="0.6"/>
+    <ellipse cx="40" cy="32" rx="20" ry="18" fill="${s}"/>
+    <ellipse cx="40" cy="32" rx="14" ry="12" fill="${s}" opacity="0.5"/>
+    <ellipse cx="34" cy="29" rx="3.5" ry="4" fill="#1a2035"/>
+    <ellipse cx="46" cy="29" rx="3.5" ry="4" fill="#1a2035"/>
+    <ellipse cx="34.5" cy="28.5" rx="1.5" ry="2" fill="white"/>
+    <ellipse cx="46.5" cy="28.5" rx="1.5" ry="2" fill="white"/>
+    <ellipse cx="40" cy="36" rx="5" ry="3.5" fill="${s}" opacity="0.8"/>
+    <circle cx="40" cy="37" r="2.5" fill="#222"/>
+    <line x1="30" y1="37" x2="18" y2="35" stroke="#ddd" stroke-width="1.2"/>
+    <line x1="30" y1="38.5" x2="18" y2="38.5" stroke="#ddd" stroke-width="1.2"/>
+    <line x1="30" y1="40" x2="18" y2="42" stroke="#ddd" stroke-width="1.2"/>
+    <line x1="50" y1="37" x2="62" y2="35" stroke="#ddd" stroke-width="1.2"/>
+    <line x1="50" y1="38.5" x2="62" y2="38.5" stroke="#ddd" stroke-width="1.2"/>
+    <line x1="50" y1="40" x2="62" y2="42" stroke="#ddd" stroke-width="1.2"/>
+    <ellipse cx="24" cy="51" rx="12" ry="7" fill="${s}" opacity="0.7" transform="rotate(-20,24,51)"/>
+    <ellipse cx="56" cy="51" rx="12" ry="7" fill="${s}" opacity="0.7" transform="rotate(20,56,51)"/>
+    <ellipse cx="40" cy="67" rx="10" ry="6" fill="${s}" opacity="0.7"/>
+    <path d="M32 68 Q40 72 48 68" stroke="${s}" stroke-width="3" fill="none" opacity="0.9"/>
+  </svg>`;
+}
+
+// ═══════════════════════════════════════════════
+// 図鑑
+// ═══════════════════════════════════════════════
+function buildZukan(){
+  const q=(document.getElementById('zukan-q').value||'').trim().toLowerCase();
+  const sex=document.getElementById('zukan-sex').value;
+  const zoo=document.getElementById('zukan-zoo').value;
+
+  let filtered=AK.filter(a=>{
+    if(sex && a.sex!==sex) return false;
+    if(zoo && a.zoo!==zoo) return false;
+    if(q && !a.name.toLowerCase().includes(q) && !a.kana.includes(q) && !a.zoo.toLowerCase().includes(q)) return false;
+    return true;
+  });
+
+  document.getElementById('zukan-count').textContent=`${filtered.length}頭 表示中（全${AK.length}頭）`;
+  const grid=document.getElementById('zukan-grid');
+  grid.innerHTML=filtered.map(a=>`
+    <div class="card${a.alive?'':' dead'} fade-up" onclick="openModal(${a.id})">
+      <div class="card-face">${a.img?`<img src="${a.img}" alt="${a.name}" loading="lazy">`:sealFace(a,84)}
+        <div class="card-face-zoo">${a.zoo}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">${a.name}<span class="badge ${a.sex==='m'?'bm':a.sex==='f'?'bf':'bu'}">${a.sex==='m'?'♂':'♀'}</span></div>
+        <div class="card-kana">${a.kana}</div>
+        <div class="card-species">${a.species}</div>
+      </div>
+    </div>`).join('');
+}
+
+// 施設フィルター初期化
+(function(){
+  const zoos=[...new Set(AK.map(a=>a.zoo))].sort();
+  const sel=document.getElementById('zukan-zoo');
+  zoos.forEach(z=>{
+    const o=document.createElement('option');
+    o.value=z;o.textContent=z;sel.appendChild(o);
+  });
+  buildZukan();
+})();
+
+// ═══════════════════════════════════════════════
+// モーダル
+// ═══════════════════════════════════════════════
+function openModal(id){
+  const a=AK.find(x=>x.id===id);if(!a)return;
+  const parents=a.parents.map(pid=>AK.find(x=>x.id===pid)).filter(Boolean);
+  const children=a.children.map(cid=>AK.find(x=>x.id===cid)).filter(Boolean);
+  const age=a.born?calcAge(a.born,a.died):'不明';
+  document.getElementById('modal-box').innerHTML=`
+    <div class="modal-hero">${a.img?`<img src="${a.img}" alt="${a.name}">`:sealFace(a,120)}</div>
+    <div class="modal-body">
+      <div class="modal-name">${a.name}${a.alive?'':' <span style="font-size:0.7em;color:#999">（故）</span>'}</div>
+      <div class="modal-kana">${a.kana}</div>
+      <div class="modal-species">${a.species}</div>
+      <div class="modal-row">
+        <span class="modal-tag">${a.sex==='m'?'♂ オス':a.sex==='f'?'♀ メス':'不明'}</span>
+        <span class="modal-tag">🏛 ${a.zoo}</span>
+        ${a.born?`<span class="modal-tag">🎂 ${a.born} (${age})</span>`:''}
+        ${a.died?`<span class="modal-tag">🕊 ${a.died}</span>`:''}
+      </div>
+      ${parents.length?`<div class="modal-section"><h3>親</h3><p>${parents.map(p=>`<b>${p.name}</b>(${p.sex==='m'?'父':'母'})`).join('・')}</p></div>`:''}
+      ${children.length?`<div class="modal-section"><h3>子ども</h3><p>${children.map(c=>`<b>${c.name}</b>`).join('・')}</p></div>`:''}
+      ${a.memo?`<div class="modal-section"><h3>メモ</h3><p>${a.memo}</p></div>`:''}
+      <button class="modal-close" onclick="closeModal()">閉じる</button>
+    </div>`;
+  document.getElementById('modal-overlay').style.display='flex';
+}
+function closeModal(){document.getElementById('modal-overlay').style.display='none';}
+function calcAge(born,died){
+  const b=new Date(born),d=died?new Date(died):new Date();
+  let age=d.getFullYear()-b.getFullYear();
+  if(d<new Date(d.getFullYear(),b.getMonth(),b.getDate()))age--;
+  return age+'歳';
+}
+
+// ═══════════════════════════════════════════════
+// 家系図
+// ═══════════════════════════════════════════════
+function buildTree(){
+  const zoos=[...new Set(AK.map(a=>a.zoo))].sort();
+  const el=document.getElementById('tree-content');
+  el.innerHTML=zoos.map(z=>{
+    const seals=AK.filter(a=>a.zoo===z);
+    // ルート（親がいない or 親が他の施設）
+    const roots=seals.filter(a=>a.parents.length===0||!a.parents.some(pid=>seals.find(s=>s.id===pid)));
+    function renderSeal(a,depth){
+      const children=AK.filter(c=>c.parents.includes(a.id)&&c.zoo===z);
+      const pad=depth*16;
+      return `<div style="margin-left:${pad}px;margin-bottom:6px">
+        <div class="tree-card" onclick="openModal(${a.id})" style="display:inline-block">
+          <div class="tree-card-name">${a.sex==='m'?'♂ ':'♀ '}${a.name}</div>
+          <div class="tree-card-sub">${a.species} / ${a.born?a.born.slice(0,4)+'生まれ':'?'}</div>
+          ${children.length?`<div class="tree-rel">↓ 子: ${children.map(c=>c.name).join('・')}</div>`:''}
+        </div>
+        ${children.map(c=>renderSeal(c,depth+1)).join('')}
+      </div>`;
+    }
+    return `<div class="tree-zoo-section">
+      <div class="tree-zoo-title">🏛 ${z}（${seals.length}頭）</div>
+      <div>${roots.map(a=>renderSeal(a,0)).join('')}</div>
+    </div>`;
+  }).join('');
+}
+document.getElementById('tab-tree').addEventListener('click',()=>{
+  if(!document.getElementById('tree-content').innerHTML)buildTree();
+},{once:true});
+document.querySelector('nav button[onclick*="tree"]').addEventListener('click',buildTree);
+
+// ═══════════════════════════════════════════════
+// クイズ
+// ═══════════════════════════════════════════════
+function makeQuestions(){
+  const qs=[];
+  // 「この子は誰？」系
+  AK.slice(0,Math.min(AK.length,6)).forEach(a=>{
+    const wrong=AK.filter(x=>x.id!==a.id).sort(()=>Math.random()-0.5).slice(0,3).map(x=>x.name);
+    const choices=[a.name,...wrong].sort(()=>Math.random()-0.5);
+    qs.push({
+      q:`この子は何年生まれ？「${a.name}」`,
+      // Trivia: 種別
+      a:a.born?a.born.slice(0,4)+'年':'?',
+    });
+    qs.push({
+      q:`「${a.name}」がいる施設はどこ？`,
+      a:a.zoo,
+      choices:[a.zoo,...AK.filter(x=>x.zoo!==a.zoo).map(x=>x.zoo)
+        .filter((v,i,arr)=>arr.indexOf(v)===i).sort(()=>Math.random()-0.5).slice(0,3)].sort(()=>Math.random()-0.5)
+    });
+    qs.push({
+      q:`「${a.name}」の種類は？`,
+      a:a.species,
+      choices:[a.species,...[...new Set(AK.filter(x=>x.species!==a.species).map(x=>x.species))]
+        .sort(()=>Math.random()-0.5).slice(0,3)].sort(()=>Math.random()-0.5)
+    });
+  });
+  return qs.filter(q=>q.choices&&q.choices.length>=2).sort(()=>Math.random()-0.5).slice(0,8);
+}
+
+let quizQs=[],quizIdx=0,quizScore=0,quizAnswered=false;
+function initQuiz(){
+  quizQs=makeQuestions();quizIdx=0;quizScore=0;renderQuiz();
+}
+function renderQuiz(){
+  const box=document.getElementById('quiz-box');
+  if(quizIdx>=quizQs.length){
+    box.innerHTML=`<div class="quiz-result fade-up">
+      <div style="font-size:2rem;margin-bottom:0.5rem">🦭</div>
+      <div id="quiz-score">${quizScore} / ${quizQs.length}</div>
+      <div style="margin:0.5rem 0;font-size:0.88rem;color:#555">${quizScore===quizQs.length?'パーフェクト！':'よくできました！'}</div>
+      <button class="quiz-btn" onclick="initQuiz()">もう一度</button>
+    </div>`;return;
+  }
+  const q=quizQs[quizIdx];quizAnswered=false;
+  box.innerHTML=`<div class="quiz-q fade-up">Q${quizIdx+1}/${quizQs.length}　${q.q}</div>
+    <div class="quiz-choices">
+      ${q.choices.map(c=>`<button class="quiz-choice" onclick="answerQuiz(this,'${c.replace(/'/g,"\\'")}','${q.a.replace(/'/g,"\\'")}')">
+        ${c}</button>`).join('')}
+    </div>`;
+}
+function answerQuiz(btn,chosen,correct){
+  if(quizAnswered)return;quizAnswered=true;
+  const isOk=chosen===correct;
+  if(isOk)quizScore++;
+  btn.classList.add(isOk?'correct':'wrong');
+  if(!isOk){
+    document.querySelectorAll('.quiz-choice').forEach(b=>{
+      if(b.textContent.trim()===correct)b.classList.add('correct');
+    });
+  }
+  setTimeout(()=>{quizIdx++;renderQuiz();},1000);
+}
+
+// ═══════════════════════════════════════════════
+// もぐれゲーム（タップして魚をとれ！）
+// ═══════════════════════════════════════════════
+(function(){
+  let canvas,ctx,score,miss,timeLeft,animId,items=[],spawnTimer=0,running=false,gameOver=false;
+  const FISH=['🐟','🐠','🦐','🦑','🐡'];
+  const BOMBS=['🦈','🪼']; // 触ると-1ミス
+  const W=320,H=460,MAX_MISS=5,GAME_TIME=30;
+
+  function init(){
+    canvas=document.getElementById('mogure-canvas');if(!canvas||canvas._mg)return;
+    canvas._mg=true;
+    ctx=canvas.getContext('2d');
+    canvas.addEventListener('click',onClick);
+    canvas.addEventListener('touchend',e=>{e.preventDefault();const t=e.changedTouches[0];onClick({clientX:t.clientX,clientY:t.clientY});},{passive:false});
+    startGame();
+  }
+
+  function startGame(){
+    score=0;miss=0;timeLeft=GAME_TIME;items=[];spawnTimer=0;running=true;gameOver=false;
+    updateHUD();
+    if(animId)cancelAnimationFrame(animId);
+    let last=0;
+    function loop(ts){
+      const dt=last?(ts-last)/1000:0.016;last=ts;
+      update(dt);draw();
+      if(running||gameOver)animId=requestAnimationFrame(loop);
+    }
+    animId=requestAnimationFrame(loop);
+    let sec=setInterval(()=>{
+      if(!running){clearInterval(sec);return;}
+      timeLeft--;updateHUD();
+      if(timeLeft<=0){running=false;gameOver=true;clearInterval(sec);}
+    },1000);
+  }
+
+  function update(dt){
+    if(!running)return;
+    spawnTimer+=dt;
+    if(spawnTimer>0.9-Math.min(score*0.02,0.5)){
+      spawnTimer=0;spawn();
+    }
+    items.forEach(it=>{it.y+=it.sp*dt;});
+    // 逃げた魚（ゴール通過）
+    items.filter(it=>!it.bomb&&it.y>H+40).forEach(()=>{
+      miss++;updateHUD();if(miss>=MAX_MISS){running=false;gameOver=true;}
+    });
+    items=items.filter(it=>it.y<=H+40&&!it.hit);
+  }
+
+  function spawn(){
+    const isBomb=Math.random()<0.18;
+    const em=isBomb?BOMBS[Math.floor(Math.random()*BOMBS.length)]:FISH[Math.floor(Math.random()*FISH.length)];
+    items.push({
+      em,x:30+Math.random()*(W-60),y:-30,sp:60+Math.random()*80,
+      sz:28,bomb:isBomb,hit:false,hitAnim:0
+    });
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // 背景
+    const grad=ctx.createLinearGradient(0,0,0,H);
+    grad.addColorStop(0,'#0a2d4a');grad.addColorStop(1,'#1a5f8a');
+    ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
+    // 気泡
+    ctx.fillStyle='rgba(255,255,255,0.06)';
+    for(let i=0;i<6;i++){ctx.beginPath();ctx.arc(50+i*45,((Date.now()/1000*20+i*80)%H),4,0,Math.PI*2);ctx.fill();}
+    // アイテム
+    ctx.font='28px serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    items.forEach(it=>{
+      ctx.save();
+      if(it.hitAnim>0){ctx.globalAlpha=it.hitAnim;ctx.scale(1+it.hitAnim*0.5,1+it.hitAnim*0.5);it.hitAnim-=0.08;}
+      ctx.fillText(it.em,it.x,it.y);
+      ctx.restore();
+    });
+    // ゲームオーバー
+    if(gameOver){
+      ctx.fillStyle='rgba(0,0,0,0.65)';ctx.fillRect(0,0,W,H);
+      ctx.fillStyle='white';ctx.font='bold 22px sans-serif';ctx.textAlign='center';
+      ctx.fillText('ゲームオーバー 🦭',W/2,H/2-40);
+      ctx.font='18px sans-serif';ctx.fillText(`スコア: ${score}`,W/2,H/2);
+      ctx.font='15px sans-serif';ctx.fillStyle='#64d0f5';
+      ctx.fillText('タップしてもう一度',W/2,H/2+50);
+    }
+  }
+
+  function onClick(e){
+    if(gameOver){startGame();return;}
+    if(!running)return;
+    const rect=canvas.getBoundingClientRect();
+    const scaleX=W/rect.width;
+    const px=(e.clientX-rect.left)*scaleX;
+    const py=(e.clientY-rect.top)*(H/rect.height);
+    for(let i=items.length-1;i>=0;i--){
+      const it=items[i];
+      if(Math.abs(it.x-px)<24&&Math.abs(it.y-py)<24){
+        it.hit=true;it.hitAnim=1;
+        if(it.bomb){miss++;updateHUD();if(miss>=MAX_MISS){running=false;gameOver=true;}}
+        else{score++;updateHUD();}
+        break;
+      }
+    }
+  }
+
+  function updateHUD(){
+    document.getElementById('mg-score').textContent=score;
+    document.getElementById('mg-time').textContent=timeLeft;
+    document.getElementById('mg-miss').textContent=miss;
+  }
+
+  window.initMogure=init;
+})();
+
+// ═══════════════════════════════════════════════
+// Service Worker 登録
+// ═══════════════════════════════════════════════
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./azarashi-sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
