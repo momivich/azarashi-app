@@ -160,48 +160,86 @@ nav button.active{border-bottom:3px solid #64d0f5;font-weight:600;color:white}
 
 <script>
 // ═══════════════════════════════════════════════
-// アザラシデータ（AK配列） — プレースホルダー
+// アザラシデータ（AK配列） — 男鹿水族館GAO
+// データ出典: on-yasuken.hatenablog.com（2025-04-04更新）
 // ═══════════════════════════════════════════════
 const AK = [
-  // ─── 旭山動物園 ───────────────────────────
-  { id:1,  name:'ウミ',   kana:'うみ',   sex:'f', born:'2019-06-15', died:null,
-    zoo:'旭山動物園', species:'ゴマフアザラシ', img:null, alive:true,
-    parents:[], children:[2,3], memo:'おっとりした性格。ごはんの時間が大好き。' },
-  { id:2,  name:'ソラ',   kana:'そら',   sex:'m', born:'2022-03-08', died:null,
-    zoo:'旭山動物園', species:'ゴマフアザラシ', img:null, alive:true,
-    parents:[1], children:[], memo:'やんちゃな末っ子。泳ぎが得意。' },
-  { id:3,  name:'シズク', kana:'しずく', sex:'f', born:'2020-11-02', died:null,
-    zoo:'旭山動物園', species:'ゴマフアザラシ', img:null, alive:true,
-    parents:[1], children:[], memo:'好奇心旺盛。水中トンネルが好き。' },
+  // ─── スターティングメンバー ─────────────────────
+  { id:1,  name:'ナナ',    kana:'なな',    sex:'m', born:null,         died:'2011-05-23',
+    zoo:'男鹿水族館GAO', species:'ゴマフアザラシ', img:null, alive:false,
+    parents:[], children:[5,6,7], memo:'推定22歳で死亡。GAOオリジナルメンバー。マリーの伴侶。' },
+  { id:2,  name:'マリー',  kana:'まりー',  sex:'f', born:null,         died:'2019-05-04',
+    zoo:'男鹿水族館GAO', species:'ゴマフアザラシ', img:null, alive:false,
+    parents:[], children:[5,6,7], memo:'おたる水族館からの保護個体。推定24歳で死亡。ナナの伴侶。' },
+  { id:3,  name:'イカク',  kana:'いかく',  sex:'f', born:null,         died:null,
+    zoo:'八景島シーパラダイス', species:'ゴマフアザラシ', img:null, alive:true,
+    parents:[], children:[], memo:'GAOスターティングメンバー。2008年12月4日、八景島シーパラダイスへ。' },
+  { id:4,  name:'ポーラ',  kana:'ぽーら',  sex:'f', born:null,         died:null,
+    zoo:'八景島シーパラダイス', species:'ゴマフアザラシ', img:null, alive:true,
+    parents:[], children:[], memo:'GAOスターティングメンバー。2006年11月16日、八景島シーパラダイスへ。' },
 
-  // ─── 名古屋港水族館 ──────────────────────
-  { id:4,  name:'ナミ',   kana:'なみ',   sex:'f', born:'2018-09-20', died:null,
-    zoo:'名古屋港水族館', species:'ゴマフアザラシ', img:null, alive:true,
-    parents:[], children:[5], memo:'' },
-  { id:5,  name:'コウ',   kana:'こう',   sex:'m', born:'2023-07-14', died:null,
-    zoo:'名古屋港水族館', species:'ゴマフアザラシ', img:null, alive:true,
-    parents:[4], children:[], memo:'2023年生まれの最年少。元気いっぱい。' },
+  // ─── ナナ×マリーのこども ────────────────────────
+  { id:5,  name:'マリコ',  kana:'まりこ',  sex:'f', born:'2005-03-30', died:null,
+    zoo:'八景島シーパラダイス', species:'ゴマフアザラシ', img:null, alive:true,
+    parents:[1,2], children:[], memo:'2006年11月16日、八景島シーパラダイスへ。' },
+  { id:6,  name:'つばき',  kana:'つばき',  sex:'f', born:'2007-03-26', died:null,
+    zoo:'八景島シーパラダイス', species:'ゴマフアザラシ', img:null, alive:true,
+    parents:[1,2], children:[], memo:'2008年12月4日、八景島シーパラダイスへ。' },
+  { id:7,  name:'みずき',  kana:'みずき',  sex:'f', born:'2008-03-31', died:null,
+    zoo:'男鹿水族館GAO', species:'ゴマフアザラシ', img:null, alive:true,
+    parents:[1,2], children:[12,13,16,17,19,21], memo:'生粋の男鹿水族館っ子。ナナとマリーの三女。' },
 
-  // ─── 鴨川シーワールド ────────────────────
-  { id:6,  name:'アオイ', kana:'あおい', sex:'f', born:'2015-04-12', died:null,
-    zoo:'鴨川シーワールド', species:'ゼニガタアザラシ', img:null, alive:true,
-    parents:[], children:[7], memo:'貫禄のあるベテラン。' },
-  { id:7,  name:'シュン', kana:'しゅん', sex:'m', born:'2021-07-03', died:null,
-    zoo:'鴨川シーワールド', species:'ゼニガタアザラシ', img:null, alive:true,
-    parents:[6], children:[], memo:'' },
+  // ─── 搬入・保護個体 ────────────────────────────
+  { id:8,  name:'ゴクウ',  kana:'ごくう',  sex:'m', born:null,         died:null,
+    zoo:'男鹿水族館GAO', species:'ゴマフアザラシ', img:null, alive:true,
+    parents:[], children:[11,12,13,14,15,16,17,18,19,20,21,22],
+    memo:'2010年1月18日、小樽市にて保護（おたる水族館）。2012年10月13日GAOへ搬入。' },
+  { id:9,  name:'こまち',  kana:'こまち',  sex:'f', born:'2009-04-02', died:null,
+    zoo:'男鹿水族館GAO', species:'ゴマフアザラシ', img:null, alive:true,
+    parents:[], children:[11,14,15,18,20,22], memo:'旭山動物園生まれ。2012年11月8日GAOへ搬入。' },
+  { id:10, name:'オガ',    kana:'おが',    sex:'m', born:'2013-03-28', died:null,
+    zoo:'新江ノ島水族館', species:'ゴマフアザラシ', img:null, alive:true,
+    parents:[], children:[], memo:'2013年3月28日GAOで保護。同年6月6日、新江ノ島水族館へ。' },
 
-  // ─── サンシャイン水族館 ──────────────────
-  { id:8,  name:'レイ',   kana:'れい',   sex:'f', born:'2020-02-25', died:null,
-    zoo:'サンシャイン水族館', species:'ゴマフアザラシ', img:null, alive:true,
-    parents:[], children:[], memo:'東京の空の下で育った。ビルが見える水槽が自慢。' },
+  // ─── ゴクウ×こまちのこども ──────────────────────
+  { id:11, name:'ここ',    kana:'ここ',    sex:'f', born:'2015-04-15', died:null,
+    zoo:'新江ノ島水族館', species:'ゴマフアザラシ', img:null, alive:true,
+    parents:[8,9], children:[], memo:'2017年2月4日、新江ノ島水族館へ。' },
+  { id:14, name:'きなこ',  kana:'きなこ',  sex:'f', born:'2017-04-19', died:null,
+    zoo:'マリンピア日本海', species:'ゴマフアザラシ', img:null, alive:true,
+    parents:[8,9], children:[], memo:'2017年9月29日、マリンピア日本海へ。' },
+  { id:15, name:'わらび',  kana:'わらび',  sex:'m', born:'2019-03-30', died:null,
+    zoo:'ドルフィンリゾート', species:'ゴマフアザラシ', img:null, alive:true,
+    parents:[8,9], children:[], memo:'2020年2月6日、ドルフィンリゾートへ。' },
+  { id:18, name:'ジェット',kana:'じぇっと', sex:'m', born:'2021-04-17', died:null,
+    zoo:'城崎マリンワールド', species:'ゴマフアザラシ', img:null, alive:true,
+    parents:[8,9], children:[], memo:'2022年11月18日、城崎マリンワールドへ。' },
+  { id:20, name:'ターボ',  kana:'たーぼ',  sex:'m', born:'2023-04-15', died:null,
+    zoo:'男鹿水族館GAO', species:'ゴマフアザラシ', img:null, alive:true,
+    parents:[8,9], children:[], memo:'GAO在籍中。こまちとゴクウの子。' },
+  { id:22, name:'ジャンボ',kana:'じゃんぼ', sex:'m', born:'2024-04-10', died:'2025-03-25',
+    zoo:'男鹿水族館GAO', species:'ゴマフアザラシ', img:null, alive:false,
+    parents:[8,9], children:[], memo:'2025年3月25日、うみたまごへの輸送中に死亡。' },
 
-  // ─── すみだ水族館 ────────────────────────
-  { id:9,  name:'コト',   kana:'こと',   sex:'f', born:'2017-02-14', died:null,
-    zoo:'すみだ水族館', species:'ワモンアザラシ', img:null, alive:true,
-    parents:[], children:[], memo:'バレンタインデー生まれ。' },
-  { id:10, name:'タイガ', kana:'たいが', sex:'m', born:'2023-05-30', died:null,
-    zoo:'すみだ水族館', species:'ゴマフアザラシ', img:null, alive:true,
-    parents:[], children:[], memo:'2023年生まれ。まだまだ小さい。' },
+  // ─── ゴクウ×みずきのこども ──────────────────────
+  { id:12, name:'ゴハン',  kana:'ごはん',  sex:'m', born:'2016-04-04', died:null,
+    zoo:'京急油壺マリンパーク', species:'ゴマフアザラシ', img:null, alive:true,
+    parents:[7,8], children:[], memo:'2017年2月4日、京急油壺マリンパークへ。' },
+  { id:13, name:'あずき',  kana:'あずき',  sex:'f', born:'2017-04-10', died:null,
+    zoo:'円山動物園', species:'ゴマフアザラシ', img:null, alive:true,
+    parents:[7,8], children:[], memo:'2018年1月31日、円山動物園へ。' },
+  { id:16, name:'ほおずき',kana:'ほおずき', sex:'f', born:'2019-03-20', died:null,
+    zoo:'四国水族館', species:'ゴマフアザラシ', img:null, alive:true,
+    parents:[7,8], children:[], memo:'伊豆・三津シーパラダイス→toa→2022年2月、四国水族館へ。' },
+  { id:17, name:'あんず',  kana:'あんず',  sex:'f', born:'2020-03-25', died:null,
+    zoo:'神戸どうぶつ王国', species:'ゴマフアザラシ', img:null, alive:true,
+    parents:[7,8], children:[], memo:'ヨーデルの森→2025年1月16日、神戸どうぶつ王国へ。' },
+  { id:19, name:'おんぷ',  kana:'おんぷ',  sex:'f', born:'2022-03-19', died:null,
+    zoo:'海遊館', species:'ゴマフアザラシ', img:null, alive:true,
+    parents:[7,8], children:[], memo:'2024年2月29日、海遊館へ。' },
+  { id:21, name:'スカイ',  kana:'すかい',  sex:'m', born:'2024-03-27', died:null,
+    zoo:'男鹿水族館GAO', species:'ゴマフアザラシ', img:null, alive:true,
+    parents:[7,8], children:[], memo:'GAO在籍中。みずきとゴクウの子。' },
 ];
 
 // ═══════════════════════════════════════════════
@@ -430,112 +468,4 @@ function answerQuiz(btn,chosen,correct){
     canvas._mg=true;
     ctx=canvas.getContext('2d');
     canvas.addEventListener('click',onClick);
-    canvas.addEventListener('touchend',e=>{e.preventDefault();const t=e.changedTouches[0];onClick({clientX:t.clientX,clientY:t.clientY});},{passive:false});
-    startGame();
-  }
-
-  function startGame(){
-    score=0;miss=0;timeLeft=GAME_TIME;items=[];spawnTimer=0;running=true;gameOver=false;
-    updateHUD();
-    if(animId)cancelAnimationFrame(animId);
-    let last=0;
-    function loop(ts){
-      const dt=last?(ts-last)/1000:0.016;last=ts;
-      update(dt);draw();
-      if(running||gameOver)animId=requestAnimationFrame(loop);
-    }
-    animId=requestAnimationFrame(loop);
-    let sec=setInterval(()=>{
-      if(!running){clearInterval(sec);return;}
-      timeLeft--;updateHUD();
-      if(timeLeft<=0){running=false;gameOver=true;clearInterval(sec);}
-    },1000);
-  }
-
-  function update(dt){
-    if(!running)return;
-    spawnTimer+=dt;
-    if(spawnTimer>0.9-Math.min(score*0.02,0.5)){
-      spawnTimer=0;spawn();
-    }
-    items.forEach(it=>{it.y+=it.sp*dt;});
-    // 逃げた魚（ゴール通過）
-    items.filter(it=>!it.bomb&&it.y>H+40).forEach(()=>{
-      miss++;updateHUD();if(miss>=MAX_MISS){running=false;gameOver=true;}
-    });
-    items=items.filter(it=>it.y<=H+40&&!it.hit);
-  }
-
-  function spawn(){
-    const isBomb=Math.random()<0.18;
-    const em=isBomb?BOMBS[Math.floor(Math.random()*BOMBS.length)]:FISH[Math.floor(Math.random()*FISH.length)];
-    items.push({
-      em,x:30+Math.random()*(W-60),y:-30,sp:60+Math.random()*80,
-      sz:28,bomb:isBomb,hit:false,hitAnim:0
-    });
-  }
-
-  function draw(){
-    ctx.clearRect(0,0,W,H);
-    // 背景
-    const grad=ctx.createLinearGradient(0,0,0,H);
-    grad.addColorStop(0,'#0a2d4a');grad.addColorStop(1,'#1a5f8a');
-    ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
-    // 気泡
-    ctx.fillStyle='rgba(255,255,255,0.06)';
-    for(let i=0;i<6;i++){ctx.beginPath();ctx.arc(50+i*45,((Date.now()/1000*20+i*80)%H),4,0,Math.PI*2);ctx.fill();}
-    // アイテム
-    ctx.font='28px serif';ctx.textAlign='center';ctx.textBaseline='middle';
-    items.forEach(it=>{
-      ctx.save();
-      if(it.hitAnim>0){ctx.globalAlpha=it.hitAnim;ctx.scale(1+it.hitAnim*0.5,1+it.hitAnim*0.5);it.hitAnim-=0.08;}
-      ctx.fillText(it.em,it.x,it.y);
-      ctx.restore();
-    });
-    // ゲームオーバー
-    if(gameOver){
-      ctx.fillStyle='rgba(0,0,0,0.65)';ctx.fillRect(0,0,W,H);
-      ctx.fillStyle='white';ctx.font='bold 22px sans-serif';ctx.textAlign='center';
-      ctx.fillText('ゲームオーバー 🦭',W/2,H/2-40);
-      ctx.font='18px sans-serif';ctx.fillText(`スコア: ${score}`,W/2,H/2);
-      ctx.font='15px sans-serif';ctx.fillStyle='#64d0f5';
-      ctx.fillText('タップしてもう一度',W/2,H/2+50);
-    }
-  }
-
-  function onClick(e){
-    if(gameOver){startGame();return;}
-    if(!running)return;
-    const rect=canvas.getBoundingClientRect();
-    const scaleX=W/rect.width;
-    const px=(e.clientX-rect.left)*scaleX;
-    const py=(e.clientY-rect.top)*(H/rect.height);
-    for(let i=items.length-1;i>=0;i--){
-      const it=items[i];
-      if(Math.abs(it.x-px)<24&&Math.abs(it.y-py)<24){
-        it.hit=true;it.hitAnim=1;
-        if(it.bomb){miss++;updateHUD();if(miss>=MAX_MISS){running=false;gameOver=true;}}
-        else{score++;updateHUD();}
-        break;
-      }
-    }
-  }
-
-  function updateHUD(){
-    document.getElementById('mg-score').textContent=score;
-    document.getElementById('mg-time').textContent=timeLeft;
-    document.getElementById('mg-miss').textContent=miss;
-  }
-
-  window.initMogure=init;
-})();
-
-// ═══════════════════════════════════════════════
-// Service Worker 登録
-// ═══════════════════════════════════════════════
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./azarashi-sw.js').catch(()=>{});
-}
-</script>
-</body>
-</html>
+    canvas.addEventLi

@@ -1,5 +1,5 @@
 // アザラシファミリー Service Worker
-const CACHE = 'azarashi-app-v1';
+const CACHE = 'azarashi-app-v2';
 const PRECACHE = [
   "./azarashi-app.html",
   "./azarashi-manifest.json",
