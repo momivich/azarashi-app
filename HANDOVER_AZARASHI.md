@@ -1,174 +1,164 @@
-# アザラシファミリーアプリ 引き継ぎプロンプト
+# アザラシファミリーアプリ 引き継ぎメモ
 
-## このファイルの使い方
-新しいチャットにこのファイルの内容をそのまま貼り付けてください。
+最終更新: 2026-06-17
 
 ---
 
 ## プロジェクト概要
 
-**アザラシファミリーアプリ** — 日本の水族館・動物園のアザラシ情報をまとめたSPA（Single Page App）。
-コアラアプリ（koala-app.html）と同じアーキテクチャ・設計思想で作成。個人利用。
+**アザラシファミリーアプリ** — 日本の水族館・動物園のアザラシ情報をまとめたSPA。
+主に男鹿水族館GAOの個体とその転出先を網羅。
 
-- **本番URL**: （GitHub Pages: 未設定）
-- **リポジトリ**: （未作成）
-- **ローカルファイル**: `azarashi-app.html`、`azarashi-sw.js`、`azarashi-manifest.json`
-- **SW キャッシュバージョン**: 現在 `azarashi-app-v1`（更新時はインクリメント必須）
+- **本番URL**: https://momivich.github.io/azarashi-app/azarashi-app.html
+- **リポジトリ**: https://github.com/momivich/azarashi-app
+- **SW キャッシュバージョン**: 現在 `azarashi-app-v5`（更新時はインクリメント必須）
+- **データ出典**: on-yasuken.hatenablog.com（2025-04-04更新）
+
+---
+
+## ファイル構成
+
+```
+azarashi-app.html       メインSPA（全データ・全機能入り）
+azarashi-sw.js          Service Worker（キャッシュ管理）
+azarashi-manifest.json  PWAマニフェスト
+```
+
+---
+
+## AK配列 現在の状態（22頭）
+
+### 写真あり ✅（15頭）
+
+| id | 名前     | 施設                   | img出典 |
+|----|----------|------------------------|---------|
+| 1  | ナナ     | 男鹿水族館GAO（故）    | GAO公式ブログ 2011年記事 |
+| 2  | マリー   | 男鹿水族館GAO（故）    | GAO公式ブログ 2011年記事 |
+| 7  | みずき   | 男鹿水族館GAO          | note.com記事 |
+| 8  | ゴクウ   | 男鹿水族館GAO          | note.com記事 |
+| 9  | こまち   | 男鹿水族館GAO          | note.com記事（GIF） |
+| 10 | オガ     | 新江ノ島水族館         | note.com記事 |
+| 11 | ここ     | 新江ノ島水族館         | note.com記事 |
+| 13 | あずき   | 円山動物園             | miyanomayu.com記事 |
+| 14 | きなこ   | マリンピア日本海       | マリンピア公式記事 |
+| 16 | ほおずき | 四国水族館             | note.com記事 |
+| 17 | あんず   | 越前松島水族館         | note.com記事 |
+| 18 | ジェット | 城崎マリンワールド     | 城崎公式サイトOGP |
+| 19 | おんぷ   | 海遊館                 | note.com記事 |
+| 20 | ターボ   | 男鹿水族館GAO          | note.com記事 |
+| 21 | スカイ   | 男鹿水族館GAO          | note.com記事 |
+
+### 写真なし・探索中 ❌
+
+| id | 名前     | 施設                        | 状況 |
+|----|----------|-----------------------------|------|
+| 15 | わらび   | ドルフィンリゾート          | 未探索 |
+| 22 | ジャンボ | 男鹿水族館GAO（2025-03-25死亡）| 未探索（うみたまご輸送中死亡） |
+| 12 | ゴハン   | 京急油壺マリンパーク        | 施設2021年閉館→個体の行方不明、写真困難 |
+
+### 写真困難（八景島4頭）
+
+| id | 名前   | 施設                   | 備考 |
+|----|--------|------------------------|------|
+| 3  | イカク | 八景島シーパラダイス   | GAOスターティングメンバー、現在不在の可能性高い |
+| 4  | ポーラ | 八景島シーパラダイス   | 同上 |
+| 5  | マリコ | 八景島シーパラダイス   | ナナ×マリーの子 |
+| 6  | つばき | 八景島シーパラダイス   | ナナ×マリーの子 |
+
+---
+
+## 最近の変更履歴
+
+### 2026-06-17（今セッション）
+- **写真追加5頭**: ナナ、マリー、ジェット、きなこ、あんず
+- **zoo更新**: あんず → 越前松島水族館（2026年6月5日転出確認）
+- **SW**: v4 → v5
+- コミット済み（hash: 0b3dfc5、メッセージ "test"）
+- **⚠️ git pushは未完了** → 下記「gitプッシュ手順」参照
+
+### 前セッション
+- 写真追加10頭: みずき、ゴクウ、こまち、オガ、ここ、あずき、ほおずき、おんぷ、ターボ、スカイ
+- GitHubリポジトリ作成・初回push
+
+---
+
+## ⚠️ gitプッシュ手順（Windowsから）
+
+サンドボックスからはGitHubに接続できないため、Windowsターミナルで実行すること。
+
+```powershell
+# ロックファイルを削除（存在する場合）
+Remove-Item "C:\Users\ym\Desktop\アザラシアプリ作成@ClaudeCode\.git\HEAD.lock" -ErrorAction SilentlyContinue
+Remove-Item "C:\Users\ym\Desktop\アザラシアプリ作成@ClaudeCode\.git\objects\maintenance.lock" -ErrorAction SilentlyContinue
+
+# プッシュ
+cd "C:\Users\ym\Desktop\アザラシアプリ作成@ClaudeCode"
+git push origin main
+```
 
 ---
 
 ## アーキテクチャ
 
-### ファイル構成
-```
-azarashi-app.html         メインSPA（全機能入り）
-azarashi-sw.js            Service Worker（キャッシュ管理）
-azarashi-manifest.json    PWAマニフェスト
-azarashi-icon-192.png     PWAアイコン（要作成）
-azarashi-icon-512.png     PWAアイコン（要作成）
-azarashi-images/          アザラシ画像（キャラ名でサブフォルダ分け）
-```
-
 ### SPA構造
 - タブ切り替えは `showTab(name, btn)` で div を `display:block/none`
-- タブ一覧: **図鑑**、**家系図**、**クイズ**、**もぐれ**（拡張予定）
+- タブ一覧: **図鑑**、**家系図**、**クイズ**、**もぐれ**
 
----
-
-## アザラシデータ（AK配列）
+### データ構造（AK配列エントリ）
 
 ```javascript
-const AK = [
-  {
-    id: 1,
-    name: 'ウミ',          // 表示名
-    kana: 'うみ',          // ひらがな（検索用）
-    sex: 'f',              // 'm' or 'f' or 'u'（不明）
-    born: '2019-06-15',   // YYYY-MM-DD（不明なら null）
-    died: null,            // 死亡日（生存中は null）
-    zoo: '旭山動物園',     // 施設名
-    species: 'ゴマフアザラシ', // 種類
-    img: null,             // 画像パス（例: 'azarashi-images/ウミ/photo.jpg'）
-    alive: true,           // 生存フラグ
-    parents: [],           // 親のIDリスト（例: [3,4]）
-    children: [2, 3],     // 子のIDリスト
-    memo: '性格や特徴のメモ'
-  },
-  ...
-]
+{
+  id: 1,
+  name: 'ナナ',         // 表示名
+  kana: 'なな',         // ひらがな（検索用）
+  sex: 'm',             // 'm' or 'f'
+  born: null,           // YYYY-MM-DD or null
+  died: '2011-05-23',   // YYYY-MM-DD or null
+  zoo: '男鹿水族館GAO', // 施設名
+  species: 'ゴマフアザラシ',
+  img: 'https://...',   // 外部URL直リンク or null
+  alive: false,
+  parents: [],          // 親のIDリスト
+  children: [5,6,7],    // 子のIDリスト
+  memo: 'メモ'
+}
 ```
 
-### 種類（species）に使うコアラ
-| 和名 | 英名 |
-|------|------|
-| ゴマフアザラシ | Spotted Seal |
-| ゼニガタアザラシ | Harbor Seal |
-| ワモンアザラシ | Ringed Seal |
-| アゴヒゲアザラシ | Bearded Seal |
-| タテゴトアザラシ | Harp Seal |
-
----
-
-## 実装済み機能
-
-### 図鑑（buildZukan）
-- 名前・水族館名で検索フィルター
-- 性別・施設でドロップダウンフィルター
-- カードタップでモーダル詳細表示
-- `sealFace(a, size)` でSVGプレースホルダー生成（img:null のとき）
-
-### 家系図（buildTree）
-- 施設ごとにセクション分け
-- 親子関係をインデントで表現
-- カードタップでモーダル表示
-- 初回タブ表示時に自動ビルド
-
-### クイズ（initQuiz）
-- AKデータから自動生成（施設名・種類クイズ）
-- 8問ランダム出題
-- 正解で緑・不正解で赤ハイライト
-
-### もぐれゲーム（initMogure）
-- Canvasベース（320×460）
-- 魚絵文字をタップして得点
-- サメ・くらげは触るとミス
-- 30秒タイムアタック
+### img追加ルール
+- 外部URLを直接 `img` フィールドに設定（ホットリンク）
+- SW の PRECACHE には追加不要（外部URLはキャッシュ対象外）
+- ローカル画像を使う場合は `azarashi-images/<名前>/photo.jpg` に置いて PRECACHE に追加 + SW バージョンインクリメント
 
 ---
 
 ## UIテーマ
 
-### カラー
 | 用途 | 値 |
-|------|-----|
+|------|----|
 | body背景 | `#e5f3fb` |
 | ヘッダー | `linear-gradient(135deg, #0a2d4a, #1a5f8a, #2896c8)` |
 | ナビ | `linear-gradient(#1a5f8a, #0a3d5c)` |
 | アクティブタブ下線 | `#64d0f5` |
-| カード背景 | white |
-| カードface | `linear-gradient(160deg, #b0d8f5, #d4eeff)` |
 | プライマリ色 | `#0a3d5c` |
 | アクセント | `#2896c8` |
 
-### SVGアザラシ（sealFace）
-- 性別で色変化: オス=青系 `#64a0d0`、メス=紫系 `#c07ab8`
-- ひげ・前足・後足も描画
+---
+
+## 写真探索メモ（情報源）
+
+| 施設 | 有効な情報源 |
+|------|-------------|
+| 男鹿水族館GAO | gao-aqua.jp/gao-cms（WordPressブログ）、note.com（ヒロサキさん等のファン記事） |
+| マリンピア日本海 | marinepia.or.jp/news（entry-XXXX.html） |
+| 城崎マリンワールド | marineworld.hiyoriyama.co.jp |
+| ドルフィンリゾート | dolphin-resort.jp |
+| note.com | 「わらび ドルフィンリゾート」「ジャンボ GAO」等で検索 |
 
 ---
 
-## 画像の追加方法
+## 拡張候補
 
-1. `azarashi-images/<名前>/` フォルダに画像を置く
-2. AKの該当エントリの `img` を設定:
-   ```javascript
-   img: 'azarashi-images/ウミ/asahiyama_2023.jpg'
-   ```
-3. `azarashi-sw.js` の `PRECACHE` に画像パスを追加
-4. SW バージョンをインクリメント
-
----
-
-## git 運用（未設定）
-
-リポジトリ作成後:
-```bash
-cd <azarashiフォルダ>
-git init
-git add azarashi-app.html azarashi-sw.js azarashi-manifest.json
-git commit -m "feat: initial template"
-git remote add origin https://github.com/<user>/azarashi-app.git
-git push -u origin main
-```
-
-デプロイ: GitHub Pages（Settings → Pages → Branch: main / root）
-**SW更新時は `azarashi-sw.js` の `const CACHE = 'azarashi-app-vNN'` をインクリメント必須**
-
----
-
-## 拡張候補（未実装）
-
-- サウンドノベル（コアラアプリのエンジンを移植）
-- 記憶ゲーム（神経衰弱）
-- タワーディフェンス系ゲーム
-- 誕生日カレンダー（今月誰が誕生日？）
+- 誕生日カレンダー（今月誰の誕生日？）
 - 水族館マップ（施設ごとの在籍一覧）
-- ゴマフ / ゼニガタ など種類別図鑑ビュー
-
----
-
-## 参考リンク（施設公式）
-
-- 旭山動物園: https://www.city.asahikawa.hokkaido.jp/asahiyamazoo/
-- 名古屋港水族館: https://nagoyaaqua.jp/
-- 鴨川シーワールド: https://www.kamogawa-seaworld.jp/
-- サンシャイン水族館: https://sunshinecity.jp/aquarium/
-- すみだ水族館: https://www.sumida-aquarium.com/
-- 上野動物園: https://www.tokyo-zoo.net/zoo/ueno/
-
----
-
-## 直近の作業履歴
-
-- テンプレート初作成（2026-06-17）
-- プレースホルダーデータ10頭（旭山・名古屋港・鴨川・サンシャイン・すみだ）
-- 機能: 図鑑・家系図・クイズ・もぐれゲーム
+- サウンドノベル
+- 記憶ゲーム（神経衰弱）
