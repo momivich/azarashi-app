@@ -11,7 +11,7 @@
 
 - **本番URL**: https://momivich.github.io/azarashi-app/azarashi-app.html
 - **リポジトリ**: https://github.com/momivich/azarashi-app
-- **SW キャッシュバージョン**: 現在 `azarashi-app-v4`（更新時はインクリメント必須）
+- **SW キャッシュバージョン**: 現在 `azarashi-app-v6`（更新時はインクリメント必須）
 - **データ出典**: on-yasuken.hatenablog.com（2025-04-04更新）
 
 ---
@@ -69,6 +69,14 @@ azarashi-manifest.json  PWAマニフェスト
 ---
 
 ## 最近の変更履歴
+
+### 2026-06-18（続々セッション）
+- **ゲーム追加**: 「すいすいアザラシ」タブ（🌊 すいすい）
+  - Flappy Bird系。タップ/スペースで上昇、岩を避けてスコアを稼ぐ
+  - Canvas 2D APIで描画（SVGライクなアザラシ・緑の岩柱・気泡背景）
+  - ベストスコア記録、ゲームオーバーメッセージあり
+- **SW**: v5 → v6
+- ⚠️ pushが必要 → 下記「gitプッシュ手順」参照
 
 ### 2026-06-18（続セッション）
 - **1頭追加**: ルナ(id:26) ← マリンピア・父テル（海響館）、母きなこ。2025年4月4日生まれ、2025年8月17日命名
