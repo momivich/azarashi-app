@@ -162,6 +162,18 @@ nav button.active{border-bottom:3px solid #64d0f5;font-weight:600;color:white}
 <div id="tab-suisui" class="tab" style="padding:0.5rem;background:#071828;min-height:100%">
   <div id="suisui-wrap">
     <canvas id="suisui-canvas" width="320" height="460"></canvas>
+    <audio id="bgm-0" src="bgm/bgm01.mp3" loop preload="none"></audio>
+    <audio id="bgm-1" src="bgm/bgm02.mp3" loop preload="none"></audio>
+    <audio id="bgm-2" src="bgm/bgm03.mp3" loop preload="none"></audio>
+    <audio id="bgm-3" src="bgm/bgm04.mp3" loop preload="none"></audio>
+    <audio id="bgm-4" src="bgm/bgm05.mp3" loop preload="none"></audio>
+    <div id="suisui-manual" style="margin-top:0.8rem;padding:0.7rem 0.9rem;background:rgba(255,255,255,0.07);border-radius:10px;text-align:left;color:#aee8ff;font-size:0.78rem;line-height:1.8">
+      <div style="font-weight:700;font-size:0.85rem;color:#64d0f5;margin-bottom:0.35rem">🎮 あそびかた</div>
+      <div>🔵 <b>タップ / スペースキー</b>でルナが上昇</div>
+      <div>🪨 岩の隙間をすり抜けよう</div>
+      <div>🎵 ステージは全8つ。進むとBGMが変わる</div>
+      <div>🏆 全ステージクリアでエンディング！</div>
+    </div>
   </div>
 </div>
 
@@ -264,7 +276,7 @@ const AK = [
     zoo:'新江ノ島水族館', species:'ゴマフアザラシ', img:'https://www.enosui.com/cmsdesigner/data/entry/diary/diary.06804.00000002.jpg', alive:true,
     parents:[10,11], children:[], memo:'父:オガ、母:ここ。えのすい開館20周年記念の初ゴマフアザラシ誕生。' },
   { id:26, name:'ルナ',   kana:'るな',   sex:'f', born:'2025-04-04', died:null,
-    zoo:'マリンピア日本海', species:'ゴマフアザラシ', img:null, alive:true,
+    zoo:'マリンピア日本海', species:'ゴマフアザラシ', img:'https://www.marinepia.or.jp/media/002/202504/20250404%E4%BB%94.jpg', alive:true,
     parents:[14], children:[], memo:'父:テル（海響館）、母:きなこ。2025年8月17日「ルナ」と命名。マリンピア日本海で6年ぶりの誕生。' },
 ];
 
@@ -630,14 +642,31 @@ function answerQuiz(btn,chosen,correct){
 
   // ─── 定数 ────────────────────────────────────
   const W=320,H=460,GR=760,JUMP=-258,GAP=155,PW=38,SEAL_X=72,SEAL_R=13,SPACING=210,LIVES=3;
+  const BGM_MAP=[0,0,1,1,2,2,3,3]; // stage → bgm audio index
 
   // ─── 状態 ────────────────────────────────────
   let canvas,ctx,_ts=0,_actx=null;
+  let _bgmIdx=-1;
   let state='title'; // title|intro|play|dead|clear|gameover|ending
   let stageIdx=0,lives=LIVES,score=0,best=0,playTime=0,stageTimer=0;
   let sealY,sealVY,sealAngle,pipes=[],bubbles=[];
 
-  // ─── Audio ───────────────────────────────────
+  // ─── BGM ────────────────────────────────────
+  function playBGM(idx){
+    if(_bgmIdx===idx)return;
+    if(_bgmIdx>=0){var old=document.getElementById('bgm-'+_bgmIdx);if(old){old.pause();old.currentTime=0;}}
+    _bgmIdx=idx;
+    var el=document.getElementById('bgm-'+idx);
+    if(!el)return;
+    el.volume=0.45;
+    el.play().catch(function(){});
+  }
+  function stopBGM(){
+    if(_bgmIdx>=0){var el=document.getElementById('bgm-'+_bgmIdx);if(el){el.pause();el.currentTime=0;}}
+    _bgmIdx=-1;
+  }
+
+  // ─── Audio SE ───────────────────────────────
   function ac(){ return _actx||(_actx=new (window.AudioContext||window.webkitAudioContext)()); }
   function tone(f,d,t,v){
     t=t||'square';v=v||0.1;
@@ -662,11 +691,12 @@ function answerQuiz(btn,chosen,correct){
     document.addEventListener('keydown',function(e){if(e.code==='Space'||e.code==='ArrowUp')onTap();});
     resetAll();requestAnimationFrame(loop);
   }
-  function resetAll(){stageIdx=0;lives=LIVES;best=0;state='title';}
+  function resetAll(){stageIdx=0;lives=LIVES;best=0;state='title';playBGM(0);}
   function startStage(intro){
     score=0;playTime=0;stageTimer=0;pipes=[];
     sealY=H/2;sealVY=0;sealAngle=0;
     bubbles=[];for(var i=0;i<12;i++)bubbles.push({x:Math.random()*W,y:Math.random()*H,r:1+Math.random()*3,sp:18+Math.random()*22,ox:Math.random()*W});
+    playBGM(BGM_MAP[stageIdx]);
     state=intro?'intro':'play';
   }
 
@@ -696,7 +726,7 @@ function answerQuiz(btn,chosen,correct){
       stageTimer+=dt;
       if(stageTimer>=2.8){
         stageIdx++;
-        if(stageIdx>=ST.length){state='ending';stageTimer=0;sndEnd();}
+        if(stageIdx>=ST.length){state='ending';stageTimer=0;sndEnd();playBGM(4);}
         else startStage(true);
       }return;
     }
@@ -728,7 +758,7 @@ function answerQuiz(btn,chosen,correct){
       }
     }
   }
-  function die(){lives--;sndDead();state=lives<=0?'gameover':'dead';stageTimer=0;}
+  function die(){lives--;sndDead();state=lives<=0?'gameover':'dead';stageTimer=0;if(state==='gameover')stopBGM();}
 
   // ─── render ──────────────────────────────────
   function render(){
